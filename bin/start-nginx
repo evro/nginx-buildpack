@@ -33,8 +33,13 @@ done
 	#E.g. bin/start-nginx bundle exec unicorn -c config/unicorn.rb
         COMMAND=${@:$n}
 	echo "buildpack=nginx at=start-app cmd=$COMMAND"
-	$COMMAND
-	echo 'app' >$psmgr
+	for i in `seq 1 $NUM_WORKERS`
+  do
+  	START_INSTANCE="N=$i $COMMAND"
+  	$START_INSTANCE
+  	echo 'app' >$psmgr
+  done
+
 ) &
 
 if [[ -z "$FORCE" ]]
