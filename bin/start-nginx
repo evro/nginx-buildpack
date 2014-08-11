@@ -47,7 +47,7 @@ COMMAND=${@:$n}
 for i in `seq 1 $NUM_WORKERS`
 do
 	(
-  	echo "Starting instance with: $COMMAND $i"
+  	echo "buildpack=nginx at=start-app cmd=$COMMAND ins=$i"
   	(export APP_INSTANCE=$i; $COMMAND)
   	echo "app$i" >$psmgr
   ) &
