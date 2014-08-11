@@ -27,21 +27,31 @@ done
 	echo 'logs' >$psmgr
 ) &
 
-#Start App Server
-(
-	#Take the command passed to this bin and start it.
-	#E.g. bin/start-nginx bundle exec unicorn -c config/unicorn.rb
-        COMMAND=${@:$n}
-	echo "buildpack=nginx at=start-app cmd=$COMMAND"
-	for i in `seq 1 $NUM_WORKERS`
-  do
-  	START_INSTANCE="APP_INSTANCE=${i} ${COMMAND}"
-  	echo "Starting instance with: $START_INSTANCE"
-  	$START_INSTANCE
-  	echo 'app' >$psmgr
-  done
+# #Start App Server
+# (
+# 	#Take the command passed to this bin and start it.
+# 	#E.g. bin/start-nginx bundle exec unicorn -c config/unicorn.rb
+#         COMMAND=${@:$n}
+# 	echo "buildpack=nginx at=start-app cmd=$COMMAND"
+# 	for i in `seq 1 $NUM_WORKERS`
+#   do
+#   	START_INSTANCE="APP_INSTANCE=${i} ${COMMAND}"
+#   	echo "Starting instance with: $START_INSTANCE"
+#   	$START_INSTANCE
+#   	echo 'app' >$psmgr
+#   done
 
-) &
+# ) &
+#
+COMMAND=${@:$n}
+for i in `seq 1 $NUM_WORKERS`
+do
+	(
+  	echo "Starting instance with: $COMMAND $i"
+  	(export APP_INSTANCE=$i; $COMMAND)
+  	echo "app$i" >$psmgr
+  ) &
+done
 
 if [[ -z "$FORCE" ]]
 then
