@@ -35,7 +35,7 @@ done
 	echo "buildpack=nginx at=start-app cmd=$COMMAND"
 	for i in `seq 1 $NUM_WORKERS`
   do
-  	START_INSTANCE="$COMMAND APP_INSTANCE=$i"
+  	START_INSTANCE="APP_INSTANCE=${i} ${COMMAND}"
   	echo "Starting instance with: $START_INSTANCE"
   	$START_INSTANCE
   	echo 'app' >$psmgr
